@@ -1,0 +1,48 @@
+[
+  {
+    "Month": 1,
+    "Year": 2020
+  },
+  {
+    "Name": "Toshio",
+    "Hours": 50,
+    "Available Days": [ "m", "w", "tr" ],
+    "Schedule Type": "fixed",
+    "Weekends": "n",
+    "Leave_Request": [ "04/27/20", "04/30/20" ],
+    "Prefered_Age": "adult",
+    "Specialty": "emerg",
+    "License": "phys",
+    "Clinic_P1": "a",
+    "Clinic_P2": "c"
+  },
+  {
+    "Name": "Anthony",
+    "Hours": 40,
+    "Available Days": [ "t", "f", "su" ],
+    "Schedule Type": "flex",
+    "Weekends": "y",
+    "Leave_Request": [ "050520", "051020" ],
+    "Prefered_Age": "fam",
+    "Specialty": "ucc",
+    "License": "nprac",
+    "Clinic_P1": "b",
+    "Clinic_P2": "c"
+  },
+  {
+    "Name": "Anthony2",
+    "Hours": 40,
+    "Available Days": [ "t", "f", "su" ],
+    "Schedule Type": "flex",
+    "Weekends": "y",
+    "Leave_Request": [ "050520", "051020" ],
+    "Prefered_Age": "fam",
+    "Specialty": "ucc",
+    "License": "nprac",
+    "Clinic_P1": "b",
+    "Clinic_P2": "c"
+  },
+  {
+    "Month": "end"
+  }
+]
