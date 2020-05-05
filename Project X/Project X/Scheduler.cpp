@@ -4,11 +4,14 @@
 #include <fstream>
 #include <array>
 #include <nlohmann/json.hpp>
-#include "Classes.h"
+#include "Support/Employee.h"
+#include "Support/Clinic.h"
+#include "Support/Calendar.h"
 
 using std::string;
 using json = nlohmann::json;
 
+/* initialize classes */
 void initClinics()
 {
 	Clinic chf("CHF", { "pediatric","adult" }, 5, 5);
@@ -25,6 +28,7 @@ void initClinics()
 }
 
 
+/* Main function */
 
 int main() {
 	int jsize, i;
@@ -32,7 +36,6 @@ int main() {
 	int m, y;
 
 	Calendar cal;
-	CSV mycsv;
 
 	// User input for month and year
 	std::cout << "Enter month #: ";
@@ -47,7 +50,7 @@ int main() {
 	std::ifstream jfile("User.json");
 	jfile >> jread;
 	
-
+	std::cout << jread[0]["Availabile Days"].dump(4) << std::endl;
 	jsize = jread.size();
 
 	Employee* emp;
@@ -55,8 +58,9 @@ int main() {
 
 
 	// set employee attributes
-	for (i = 0; i < jsize; i++) {
+	for (i = 0; i < 1; i++) {
 		emp[i].setName(jread[i]["Name"].get<string>());
+		//emp[i].setAvailability(jread[i]["Availability"]);
 	}
 
 
@@ -69,6 +73,7 @@ int main() {
 	1. JSON objects to Class objects
 	2. start scheduling
     */
+
 	delete[] emp;
 	return 0;
 }

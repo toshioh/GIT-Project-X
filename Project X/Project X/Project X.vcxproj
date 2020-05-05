@@ -138,11 +138,15 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="Classes.cpp" />
     <ClCompile Include="Scheduler.cpp" />
+    <ClCompile Include="Support\Calendar.cpp" />
+    <ClCompile Include="Support\Clinic.cpp" />
+    <ClCompile Include="Support\Employee.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Classes.h" />
+    <ClInclude Include="Support\Calendar.h" />
+    <ClInclude Include="Support\Clinic.h" />
+    <ClInclude Include="Support\Employee.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="User.json" />

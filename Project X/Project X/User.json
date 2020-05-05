@@ -1,28 +1,22 @@
 [
   {
     "Name": "Toshio",
-    "Available Days": [
-      {
-        "1":"Mon",
-        "2":"Wed",
-        "3":"Thu"
-      }
-    ],
-    "Prefered Age": "adult"
+    "Available Days": [ "Mon", "Wed", "Thu" ],
+    "Preferred Age": "adult"
   },
   {
     "Name": "Anthony",
     "Available Days": [ "Tue", "Fri", "Sun" ],
-    "Prefered Age": "adult"
+    "Preferred Age": "adult"
   },
   {
     "Name": "Jaesic",
-    "Available Days": [ "Tue", "Wed", "Sat" ],
-    "Prefered Age": "pediatric"
+    "Available Days": ["Tue", "Wed", "Sat" ],
+    "Preferred Age": "pediatric"
   },
   {
     "Name": "Joaquin",
     "Available Days": [ "Tue", "Fri", "Sat" ],
-    "Prefered Age": "family"
+    "Preferred Age": "family"
   }
 ]

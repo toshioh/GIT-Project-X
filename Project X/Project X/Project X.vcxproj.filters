@@ -13,18 +13,33 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
+    <Filter Include="Resource Files\Support">
+      <UniqueIdentifier>{29267ec3-ebdf-4676-8948-8c3250ffb038}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Classes.h">
-      <Filter>Header Files</Filter>
+    <ClInclude Include="Support\Calendar.h">
+      <Filter>Resource Files\Support</Filter>
+    </ClInclude>
+    <ClInclude Include="Support\Clinic.h">
+      <Filter>Resource Files\Support</Filter>
+    </ClInclude>
+    <ClInclude Include="Support\Employee.h">
+      <Filter>Resource Files\Support</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Classes.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="Scheduler.cpp">
       <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Support\Calendar.cpp">
+      <Filter>Resource Files\Support</Filter>
+    </ClCompile>
+    <ClCompile Include="Support\Clinic.cpp">
+      <Filter>Resource Files\Support</Filter>
+    </ClCompile>
+    <ClCompile Include="Support\Employee.cpp">
+      <Filter>Resource Files\Support</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
