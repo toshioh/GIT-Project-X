@@ -1,5 +1,4 @@
 #include "Employee.h"
-#include "Calendar.h"
 #include <iostream>
 #include <iomanip>
 #include <string>
@@ -7,6 +6,15 @@
 #include <fstream>
 
 using namespace std;
+
+
+void Employee::setAvailability(vector<string> av) {
+	availability_ = av;
+}
+
+void Employee::setPrefAge(string prefage) {
+	prefAge_ = prefage;
+}
 
 void Employee::setName(string empName) {
 	name_ = empName;
@@ -22,6 +30,14 @@ void Employee::setHours(int hours) {
 
 void Employee::setScheduleType(string type) {
 	scheduleType_ = type;
+}
+
+vector<string> Employee::getAvailability() {
+	return availability_;
+}
+
+string Employee::getPrefAge() {
+	return prefAge_;
 }
 
 string Employee::getName() {
