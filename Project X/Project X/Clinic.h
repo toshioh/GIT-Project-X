@@ -10,9 +10,6 @@
 #ifndef CLINIC_H
 #define CLINIC_H
 
-#include <string>
-#include <array>
-
 class Clinic {
 private:
 	std::string name;
