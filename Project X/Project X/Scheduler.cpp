@@ -10,6 +10,7 @@
 #include "Support/Calendar.h"
 
 using std::string;
+using std::vector;
 using json = nlohmann::json;
 
 /* initialize classes */
@@ -28,69 +29,126 @@ void initClinics()
 	*/
 }
 
+int findQualifiedEmpIndex(std::vector<Employee> &employees, string neededAgeGroup, int osize)
+{
+	int index = -1;
+	//int check = 0;
+	for (int i = 0; i < osize; i++)
+	{
+		string empPrefAge = employees[i].getPrefAge();
+		if (neededAgeGroup == empPrefAge || empPrefAge == "family") {
+			index = i;
+			i = osize;
+		}
+	}
+	if (index == -1)
+	{
+		throw std::invalid_argument("No employees left to fill this position!");
+	}
+	else {
+		employees[index].setPrefAge("null");
+	}
+	return index;
+}
+
+vector<Employee> initEmployee(json jread, int jsize) {
+	std::vector<Employee> emp;
+	Employee newemp;
+	json::iterator it;
+	int i;
+
+	// Read JSON attributes
+	for (i = 0; i < jsize; i++) {
+		// Set Name and Preferred Age
+		emp.push_back(newemp);
+		emp[i].setName(jread[i]["Name"].get<string>());
+		emp[i].setPrefAge(jread[i]["Preferred Age"].get<string>());
+		// Set Available Days
+		it = jread[i]["Available Days"].begin();
+		for (it = jread[i]["Available Days"].begin(); it != jread[i]["Available Days"].end(); it++) {
+			emp[i].setAvailability(*it);
+		}
+	}
+	return emp;
+}
+
+void removeAvailable(vector<Employee>& employees, string day)
+{
+	int size = employees.size();
+	for (int i = 0; i < size; i++)
+	{
+		vector<string> availableDays = employees[i].getAvailability();
+		vector<string>::iterator it;
+
+		it = find(availableDays.begin(), availableDays.end(), day);
+		if (it == availableDays.end())
+			employees[i].setPrefAge("NULL");
+	}
+}
+
 
 /* Main function */
 
 int main() {
-	int jsize, i;
+	int jsize, i, m, y;
 	json jread;
-	int m, y;
-
 	Calendar cal;
+	vector<string> vect;
+	vector<Employee> enew;
 
 	// User input for month and year
+	/*
 	std::cout << "Enter month #: ";
 	std::cin >> m;
 	std::cout << "Enter Year #: ";
 	std::cin >> y;
 
 	cal.setMonthYearNum(m,y);
-
+	*/
 	
 	// Reading JSON
 	std::ifstream jfile("User.json");
 	jfile >> jread;
-	
-	
-	std::cout << jread[0]["Available Days"].size() << std::endl;
 	jsize = jread.size();
-
-	Employee* emp;
-	emp = new Employee[jsize];
-
 	
-	// set employee attributes
-	int avsize, j;
-	json::iterator it;
+	// Read into Employee vector of size jsize
+	enew = initEmployee(jread, jsize);
 
-	std::vector<string> vect;
-	for (i = 0; i < jsize; i++) {
-		emp[i].setName(jread[i]["Name"].get<string>());
-		
-		avsize = jread[i]["Available Days"].size();
-		std::cout << jread[i]["Available Days"].type_name() << std::endl;
-		
-		it = jread[i]["Available Days"].begin();
 
-		// Set Available Days
-		for (it = jread[i]["Available Days"].begin(); it != jread[i]["Available Days"].end(); it++) {
-			std::cout << *it << std::endl;
-		}
+
+// Testing revmoveAvailable
+	removeAvailable(enew, "Tue");
+	std::cout << "Removeable age test: " << std::endl;
+	std::cout << enew[0].getPrefAge() << std::endl;
+	std::cout << enew[1].getPrefAge() << std::endl;
+	std::cout << enew[2].getPrefAge() << std::endl;
+	std::cout << enew[3].getPrefAge() << std::endl;
+// End of Tesing
+	
+// Testing Availability
+	std::cout << "Get Availability test: " << std::endl;
+	vect = enew[3].getAvailability();
+	for (auto itt = vect.begin(); itt != vect.end(); itt++) {
+		std::cout << *itt << " ";
 	}
+	std::cout << "\n";
+// End of Tesing
 
+//Testing findQualifiedEmpIndex Function:
+	std::cout << "Find qualified index test: " << std::endl;
+	int indx;
+	indx = findQualifiedEmpIndex(enew, "adult", jsize);
+	std::cout << indx << std::endl;
+	std::cout << enew[indx].getName() << std::endl;
+	std::cout << enew[indx].getPrefAge() << std::endl;
 	
-	
-	
-	// enter into csv
-	//mycsv.sendNames("CSV_test.csv", emp, jsize);
-	//mycsv.sendDates("CSV_test.csv", cal, cal.getnumOfDays());
+	indx = findQualifiedEmpIndex(enew, "adult", jsize);
+	std::cout << indx << std::endl;
+	std::cout << enew[indx].getName() << std::endl;
+	std::cout << enew[indx].getPrefAge() << std::endl;
 
+// End of Testing
 
-	/*
-	1. JSON objects to Class objects
-	2. start scheduling
-    */
-
-	delete[] emp;
+	//delete[] emp;
 	return 0;
 }

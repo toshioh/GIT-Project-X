@@ -18,7 +18,7 @@ private:
 	int			numOfDays_;
 	std::string dayName_;
 	bool        leapYear_;
-	std::string dNames_[7] = { "Sun","Mon","Tues","Wed","Thu","Fri","Sat" };
+	std::string dNames_[7] = { "Sun","Mon","Tue","Wed","Thu","Fri","Sat" };
 	int			nDays_[12] = { 31,28,31,30,
 							   31,30,31,31,
 							   30,31,30,31 }; // not leap year;

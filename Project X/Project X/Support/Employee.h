@@ -25,7 +25,7 @@ private:
 public:
 
 	//Employee(const std::string&, const std::string&, int);
-	void		setAvailability(std::vector<std::string>);
+	void		setAvailability(std::string);
 	void		setPrefAge(std::string);
 	void		setName(std::string);
 	void		setLicense(std::string);

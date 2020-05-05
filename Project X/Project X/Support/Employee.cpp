@@ -8,8 +8,8 @@
 using namespace std;
 
 
-void Employee::setAvailability(vector<string> av) {
-	availability_ = av;
+void Employee::setAvailability(string av) {
+	availability_.push_back(av);
 }
 
 void Employee::setPrefAge(string prefage) {
