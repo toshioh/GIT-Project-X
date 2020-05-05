@@ -9,11 +9,41 @@
 using std::string;
 using json = nlohmann::json;
 
+void initClinics()
+{
+	Clinic chf("CHF", { "pediatric","adult" }, 5, 5);
+	Clinic ths("THS", { "pediatric","adult" }, 2, 3);
+	Clinic ppch("PPCH", { "pediatric","adult" }, 2, 3);
+	/*
+	std::cout << chf.getName() << std::endl;
+	std::vector<string> list = chf.getMinStaff();
+	for (int i = 0; i < 2; i++)
+		std::cout << list[i] << "  ";
+	std::cout << std::endl << chf.getIdeal() << std::endl;
+	std::cout << chf.getMax() << std::endl;
+	*/
+}
+
+
+
+
 int main() {
 	int jsize, i;
-	json j, jread;
-	string* jobj;
+	json jread;
+	int m, y;
 
+	Calendar cal;
+	CSV mycsv;
+
+	// User input for month and year
+	std::cout << "Enter month #: ";
+	std::cin >> m;
+	std::cout << "Enter Year #: ";
+	std::cin >> y;
+
+	cal.setMonthYearNum(m,y);
+
+	
 	// Reading JSON
 	std::ifstream jfile("User.json");
 	jfile >> jread;
@@ -22,7 +52,6 @@ int main() {
 	jsize = jread.size();
 
 	Employee* emp;
-	Calendar* cal;
 	emp = new Employee[jsize];
 
 	// set employee attributes
@@ -34,42 +63,25 @@ int main() {
 	}
 
 	// enter into csv
-	CSV mycsv;
 	mycsv.sendNames("CSV_test.csv", emp, jsize);
+	mycsv.sendDates("CSV_test.csv", cal, cal.getnumOfDays());
 
-	
+
+	/*
 	for (i = 0; i < jsize; i++) {
 		std::cout << emp[i].getName() << std::endl;
 		std::cout << emp[i].getLicense() << std::endl;
 		std::cout << emp[i].getHours() << std::endl;
 		std::cout << emp[i].getScheduleType() << std::endl;
 	}
+	*/
 
-	//std::cout << emp << std::endl;
-
-
-
-	
-
-
-	// allocate memory for jobj
-	//jobj = new string[jsize];
-    /*
-	//string jobj;
-	std::cout << jsize << std::endl;
-	// get names
-	for (int j = 0; j < jsize; j++) {
-		// create an array of objects from JSON
-		jobj[j] = jread[j].dump(4); // employee 1 name
-	}
-	// for loop for print
-	std::cout << jobj[0] << std::endl; // function
 	/*
 	1. JSON objects to Class objects
 	2. start scheduling
 	
 	
     */
-	//delete[] emp;
+	delete[] emp;
 	return 0;
 }

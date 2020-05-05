@@ -8,97 +8,119 @@
 /* CLINIC CLASS */
 
 using namespace std;
-/*
-Clinic::Clinic(const string& clinicName, array<bool, 31> clinicDays, int numStaff){
+Clinic::Clinic(string clinicName, vector<string> min, int ideal, int max) {
 	setName(clinicName);
-	staff_ = numStaff;
-	setDays(clinicDays);
+	setMinStaff(min);
+	setIdeal(ideal);
+	setMax(max);
 }
 
 // Set Clinic's Name, Days open/closed, Number of staff for each clinic
-void Clinic::setName(const string& clinicName) {
-	name_ = clinicName;
+void Clinic::setName(string clinicName) {
+	name = clinicName;
 }
 
-void Clinic::setStaff(int& numStaff) {
-	staff_ = numStaff;
+void Clinic::setMinStaff(vector<string> min) {
+	min_staff = min;
+}
+void Clinic::setIdeal(int ideal) {
+	ideal_clinicians = ideal;
 }
 
-void Clinic::setDays(const array<bool, 31>& clinicDays) {
-	days = clinicDays;
+void Clinic::setMax(int max) {
+	max_clinicians = max;
 }
+
 
 // Get Clinic's Name, Days open/closed, Number of staff for each clinic
-string Clinic::getName() const {
-	return name_;
+string Clinic::getName() {
+	return name;
 }
 
-array<bool, 31> Clinic::getDays() const {
-	return days;
+vector<string> Clinic::getMinStaff() {
+	return min_staff;
 }
-
-int Clinic::getStaff() const {
-	return staff_;
+int Clinic::getIdeal() {
+	return ideal_clinicians;
 }
-*/
+int Clinic::getMax() {
+	return max_clinicians;
+}
 
 
 /* * * * *  CALENDAR CLASS * * * * */
 
-void Calendar::setMonth(int month) {
+void Calendar::setMonthYearNum(int month, int year) {
 	if (month < 1 || month > 12) {
 		cout << "Invalid month. Set to Jan by default." << endl;
-		month_ = 1;
+		monthNum_ = 1;
 	}
 	else {
-		month_ = month;
+		monthNum_ = month;
 	}
-}
 
-void Calendar::setYear(int year) {
 	if (year < 2020) {
 		cout << "Past years are invalid. Current year set by default." << endl;
-		year_ = 2020;
-		leapYear_ = checkYear(2020);
+		yearNum_ = 2020;
+		checkYear(2020);
 	}
 	else {
-		year_ = year;
-		leapYear_ = checkYear(year);
+		yearNum_ = year;
+		checkYear(year);
 	}
+
+	setnumOfDays(monthNum_);
 }
 
-void Calendar::setDate(int month, int year) {
-	
-}
-
-bool Calendar::checkYear(int year) {
+void Calendar::checkYear(int year) {
 	if (year % 400 == 0 || year % 4 == 0) {
-		numDays_[1] = 29;
-		return true;
+		nDays_[1] = 29;
 	}
 	else if (year % 100 == 0) {
-		return false;
+		nDays_[1] = 28;
 	}
 	else {
-		return false;
+		nDays_[1] = 28;
 	}
 }
 
-int Calendar::getMonth() {
-	return month_;
+int Calendar::getYearNum() {
+	return yearNum_;
 }
 
-string Calendar::getStartDay() {
-	if (month_ == 1 && year_ == 2020) {
-		return mo_startDay_[3];
-	}
-	else {
-
-	}
-
+int Calendar::getMonthNum() {
+	return monthNum_;
 }
 
+string Calendar::getMonthName(int monthNum) {
+	string months[] = { "Jan","Feb","Mar","Apr",
+						"May","Jun","Jul","Aug",
+						"Sep","Oct","Nov","Dec"};
+	return (months[monthNum-1]);
+}
 
+void Calendar::setDayName(int day) {
+	// index 0
+	dayName_ = dNames_[day];
+}
+
+string Calendar::getDayName() {
+	return dayName_;
+}
+
+int Calendar::dayNumber(int day, int month, int year) {
+	static int t[] = {0,3,2,5,0,3,5,1,4,6,2,4};
+	year -= month < 3;
+	return (year + year / 4 - year / 100 + year / 400 + t[month - 1] + day) % 7;
+}
+
+void Calendar::setnumOfDays(int monthnum) {
+	numOfDays_ = nDays_[monthnum - 1];
+}
+
+int Calendar::getnumOfDays() {
+	return numOfDays_;
+}
 
 
 /* * * * *  EMPLOYEE CLASS * * * * */
@@ -155,94 +177,43 @@ int CSV::getCols() {
 }
 
 void CSV::sendNames(string filename, Employee* names, int size) {
-	ofstream myFile(filename);
+	fstream myFileout;
+	myFileout.open(filename, ios::out | ios::app);
+	
 	int i;
 	for (i = 0; i < size; i++) {
 		if (i == 0) {
-			myFile << "Scheduler" << ",";
+			myFileout << "Scheduler" << "," << names[i].getName() << ",";
 		}
-		myFile << names[i].getName() << ",";
+		else {
+			myFileout << names[i].getName() << ",";
+		}
 	}
-	myFile << "\n";
+	myFileout.close();
 }
 
+void CSV::sendDates(string filename, Calendar c, int numofdays) {
+	string dayname;
+	int month, year, daynum;
+	string date, monthname;
+	fstream myFileout;
 
-/* * * * *  MONTH CLASS * * * * */
-/*
-Month::Month(int month, int yr, int start) {
-	setMonthName(month);
-	setMonthNum(month);
-	setYear(yr);
+	myFileout.open(filename,ios::out | ios::app);
+	
+	int i;
+	for (i = 0; i <= numofdays; i++) {
+		if (i == 0) {
+			myFileout << "\n";
+		}
+		else {
+			month = c.getMonthNum();
+			year = c.getYearNum();
+			c.setDayName(c.dayNumber(i,month,year));
+			monthname = c.getMonthName(month);
+
+			date = c.getDayName() + " " + to_string(i) + "-" + monthname + "-" + to_string(year);
+			myFileout << date << "\n";
+		}
+	}	
+	myFileout.close();
 }
-
-void Month::setMonthName(int month) {
-	if (month < 1 || month > 12) {
-		cout << "Invalid month. Set to Jan (1) by default." << endl;
-		monthName_ = months_[0]; // default: January
-	}
-	else {
-		monthName_ = months_[month - 1];
-	}
-}
-
-void Month::setMonthNum(int month) {
-	if (month < 1 || month > 12) {
-		cout << "Invalid month. Set to 1 (Jan) by default." << endl;
-		monthNum_ = 1; // default
-		setMonthName(1);
-		setDays(1);
-	}
-	else {
-		monthNum_ = month;
-		setMonthName(month);
-		setDays(month);
-	}
-}
-
-void Month::setYear(int yr) {
-	if (yr < 2020) {
-		cout << "Pick current or future year. Set to 2020 by default." << endl;
-		year_ = 2020;
-	}
-	else {
-		year_ = yr;
-	}
-}
-
-void Month::setDays(int month) {
-	if (month < 1 || month > 12) {
-		cout << "Invalid month. Set to 1 (Jan) by default." << endl;
-		numDays_ = daysnMonth_[0];
-	}
-	else {
-		numDays_ = daysnMonth_[month - 1];
-	}
-}
-
-void Month::setStartDay(int start) {
-	if (start < 1 || start > getStartDay()) {
-
-	}
-	startDay_ = start;
-}
-
-string Month::getMonthName() {
-	return monthName_;
-}
-
-int Month::getMonthNum() {
-	return monthNum_;
-}
-
-int Month::getYear() {
-	return year_;
-}
-
-int Month::getDays() {
-	return numDays_;
-}
-
-int Month::getStartDay() {
-	return startDay_;
-}
-*/

@@ -1,12 +1,8 @@
 [
   {
-    "Month": 1,
-    "Year": 2020
-  },
-  {
     "Name": "Toshio",
     "Hours": 50,
-    "Available Days": [ "m", "w", "tr" ],
+    "Available Days": [ "Mon", "Wed", "Thu" ],
     "Schedule Type": "fixed",
     "Weekends": "n",
     "Leave_Request": [ "04/27/20", "04/30/20" ],
@@ -41,8 +37,5 @@
     "License": "nprac",
     "Clinic_P1": "b",
     "Clinic_P2": "c"
-  },
-  {
-    "Month": "end"
   }
 ]
