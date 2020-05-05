@@ -8,6 +8,7 @@
 /* CLINIC CLASS */
 
 using namespace std;
+
 Clinic::Clinic(string clinicName, vector<string> min, int ideal, int max) {
 	setName(clinicName);
 	setMinStaff(min);
@@ -125,6 +126,14 @@ int Calendar::getnumOfDays() {
 
 /* * * * *  EMPLOYEE CLASS * * * * */
 
+void Employee::setAvailability(string av) {
+	availability_ = av;
+}
+
+void Employee::setPrefAge(string prefage) {
+	prefAge_ = prefage;
+}
+
 void Employee::setName(string empName) {
 	name_ = empName;
 }
@@ -139,6 +148,14 @@ void Employee::setHours(int hours) {
 
 void Employee::setScheduleType(string type) {
 	scheduleType_ = type;
+}
+
+string Employee::getAvailability() {
+	return availability_;
+}
+
+string Employee::getPrefAge() {
+	return prefAge_;
 }
 
 string Employee::getName() {
@@ -159,7 +176,7 @@ string Employee::getScheduleType() {
 
 
 /* * * * *  CSV CLASS * * * * */
-
+/*
 void CSV::setRows(int rows) {
 	rows_ = rows;
 }
@@ -217,3 +234,4 @@ void CSV::sendDates(string filename, Calendar c, int numofdays) {
 	}	
 	myFileout.close();
 }
+*/

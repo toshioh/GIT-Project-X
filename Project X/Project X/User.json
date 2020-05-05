@@ -1,41 +1,28 @@
 [
   {
     "Name": "Toshio",
-    "Hours": 50,
-    "Available Days": [ "Mon", "Wed", "Thu" ],
-    "Schedule Type": "fixed",
-    "Weekends": "n",
-    "Leave_Request": [ "04/27/20", "04/30/20" ],
-    "Prefered_Age": "adult",
-    "Specialty": "emerg",
-    "License": "phys",
-    "Clinic_P1": "a",
-    "Clinic_P2": "c"
+    "Available Days": [
+      {
+        "1":"Mon",
+        "2":"Wed",
+        "3":"Thu"
+      }
+    ],
+    "Prefered Age": "adult"
   },
   {
     "Name": "Anthony",
-    "Hours": 40,
-    "Available Days": [ "t", "f", "su" ],
-    "Schedule Type": "flex",
-    "Weekends": "y",
-    "Leave_Request": [ "050520", "051020" ],
-    "Prefered_Age": "fam",
-    "Specialty": "ucc",
-    "License": "nprac",
-    "Clinic_P1": "b",
-    "Clinic_P2": "c"
+    "Available Days": [ "Tue", "Fri", "Sun" ],
+    "Prefered Age": "adult"
   },
   {
-    "Name": "Anthony2",
-    "Hours": 40,
-    "Available Days": [ "t", "f", "su" ],
-    "Schedule Type": "flex",
-    "Weekends": "y",
-    "Leave_Request": [ "050520", "051020" ],
-    "Prefered_Age": "fam",
-    "Specialty": "ucc",
-    "License": "nprac",
-    "Clinic_P1": "b",
-    "Clinic_P2": "c"
+    "Name": "Jaesic",
+    "Available Days": [ "Tue", "Wed", "Sat" ],
+    "Prefered Age": "pediatric"
+  },
+  {
+    "Name": "Joaquin",
+    "Available Days": [ "Tue", "Fri", "Sat" ],
+    "Prefered Age": "family"
   }
 ]

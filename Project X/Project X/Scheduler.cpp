@@ -26,7 +26,6 @@ void initClinics()
 
 
 
-
 int main() {
 	int jsize, i;
 	json jread;
@@ -54,33 +53,21 @@ int main() {
 	Employee* emp;
 	emp = new Employee[jsize];
 
+
 	// set employee attributes
 	for (i = 0; i < jsize; i++) {
 		emp[i].setName(jread[i]["Name"].get<string>());
-		emp[i].setLicense(jread[i]["License"].get<string>());
-		emp[i].setHours(jread[i]["Hours"].get<int>());
-		emp[i].setScheduleType(jread[i]["Schedule Type"].get<string>());
 	}
+
 
 	// enter into csv
-	mycsv.sendNames("CSV_test.csv", emp, jsize);
-	mycsv.sendDates("CSV_test.csv", cal, cal.getnumOfDays());
+	//mycsv.sendNames("CSV_test.csv", emp, jsize);
+	//mycsv.sendDates("CSV_test.csv", cal, cal.getnumOfDays());
 
-
-	/*
-	for (i = 0; i < jsize; i++) {
-		std::cout << emp[i].getName() << std::endl;
-		std::cout << emp[i].getLicense() << std::endl;
-		std::cout << emp[i].getHours() << std::endl;
-		std::cout << emp[i].getScheduleType() << std::endl;
-	}
-	*/
 
 	/*
 	1. JSON objects to Class objects
 	2. start scheduling
-	
-	
     */
 	delete[] emp;
 	return 0;
