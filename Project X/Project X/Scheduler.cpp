@@ -24,16 +24,9 @@ vector<Clinic> initClinics()
 	Clinic ppch("PPCH", { "pediatric","adult" }, 2, 3);
 	clinic.push_back(ppch);
 
-	/*
-	std::cout << chf.getName() << std::endl;
-	std::vector<string> list = chf.getMinStaff();
-	for (int i = 0; i < 2; i++)
-		std::cout << list[i] << "  ";
-	std::cout << std::endl << chf.getIdeal() << std::endl;
-	std::cout << chf.getMax() << std::endl;
-	*/
 	return clinic;
 }
+
 
 int findQualifiedEmpIndex(std::vector<Employee> &employees, string neededAgeGroup, int osize)
 {
@@ -55,6 +48,7 @@ int findQualifiedEmpIndex(std::vector<Employee> &employees, string neededAgeGrou
 	}
 	return index;
 }
+
 
 vector<Employee> initEmployee(json jread) {
 	std::vector<Employee> emp;
@@ -127,7 +121,7 @@ vector<vector<string>> createCalendar(vector<string> dates, vector<Employee> emp
 	vector<string> row;
 	string empName;
 	string date;
-	//std::cout << "date: " << dates.size() << std::endl;;
+
 	for (int i = 0; i < dates.size(); i++) {
 		row = {};
 		for (int j = 0; j <= emp.size(); j++) {
@@ -310,107 +304,35 @@ int main() {
 	vector<Employee> enew;
 
 	// User input for month and year
-	
 	std::cout << "Enter month #: ";
 	std::cin >> m;
 	std::cout << "Enter Year #: ";
 	std::cin >> y;
-
 	cal.setMonthYearNum(m,y);
-	
 	
 	// Reading JSON
 	std::ifstream jfile("User.json");
 	jfile >> jread;
-	//jsize = jread.size();
 	
-	// Read into Employee vector of size jsize
+	// Initialize Employee and Clinic Classes
 	enew = initEmployee(jread);
 	clinic = initClinics();
 
 
-// 1. Testing schedule Dates
-	//std::cout << "Schedule test: " << std::endl;
+	// 1. Scheduling dates
 	vector<string> dates;
 	dates = scheduleDates(cal);
-	/*
-	std::cout << dates.size() << std::endl;
-	string currentDay;
-	for (int k = 0; k < dates.size(); k++) {
-		currentDay = dates[k];
-		std::cout << currentDay << std::endl;
-	}
-	*/
-// End of Tesing
 
-// 2. Testing Calendar make:
-	//std::cout << "Calendar row test: " << std::endl;
+	// 2. Create calendar
 	vector<vector<string>> calendar;
-	//vector<string> getvect;
-	//string getcal;
 	calendar = createCalendar(dates, enew);
-	/*
-	for (i = 0; i < calendar.size(); i++) {
-		for (int j = 0; j < calendar[i].size(); j++) {
-			std::cout << calendar[i][j] << "  ";
-		}
-		std::cout << "\n";
-	}
-	*/
-// End of Tesing
 
-// 3. Fill calendar
+	// 3. Fill calendar
 	vector<vector<string>> fullCalendar;
 	fullCalendar = fillCalendar(calendar,enew,clinic,jread);
-	/*
-	for (i = 0; i < fullCalendar.size(); i++) {
-		for (int j = 0; j < fullCalendar[i].size(); j++) {
-			std::cout << fullCalendar[i][j] << "  ";
-		}
-		std::cout << "\n";
-	}
-	*/
-// End fill
 
-// 4. create csv
+	// 4. create csv
 	printCSV(fullCalendar);
 
-
-// Testing revmoveAvailable
-	/*
-	removeAvailable(enew, "Tue");
-	std::cout << "Removeable age test: " << std::endl;
-	std::cout << enew[0].getPrefAge() << std::endl;
-	std::cout << enew[1].getPrefAge() << std::endl;
-	std::cout << enew[2].getPrefAge() << std::endl;
-	std::cout << enew[3].getPrefAge() << std::endl;
-	*/
-// End of Tesing
-/*
-// Testing Availability
-	std::cout << "Get Availability test: " << std::endl;
-	vect = enew[3].getAvailability();
-	for (auto itt = vect.begin(); itt != vect.end(); itt++) {
-		std::cout << *itt << " ";
-	}
-	std::cout << "\n";
-// End of Tesing
-
-//Testing findQualifiedEmpIndex Function:
-	std::cout << "Find qualified index test: " << std::endl;
-	int indx;
-	indx = findQualifiedEmpIndex(enew, "adult", jsize);
-	std::cout << indx << std::endl;
-	std::cout << enew[indx].getName() << std::endl;
-	std::cout << enew[indx].getPrefAge() << std::endl;
-	
-	indx = findQualifiedEmpIndex(enew, "adult", jsize);
-	std::cout << indx << std::endl;
-	std::cout << enew[indx].getName() << std::endl;
-	std::cout << enew[indx].getPrefAge() << std::endl;
-
-// End of Testing
-*/
-	//delete[] emp;
 	return 0;
 }
