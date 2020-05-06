@@ -281,7 +281,21 @@ vector<vector<string>> fillCalendar(vector<vector<string>> cal,vector<Employee> 
 
 
 void printCSV(vector<vector<string>> calendar) {
+	
+	int rowsize = calendar.size();
+	int colsize = calendar[0].size();
 
+	std::ofstream myfile;
+	myfile.open("CSV_test.csv");
+
+	for (int i = 0; i < rowsize; i++) {
+		for (int j = 0; j < colsize; j++) {
+			myfile << calendar[i][j];
+			myfile << ",";
+		}
+		myfile << "\n";
+	}
+	myfile.close();
 }
 
 
@@ -348,17 +362,18 @@ int main() {
 // 3. Fill calendar
 	vector<vector<string>> fullCalendar;
 	fullCalendar = fillCalendar(calendar,enew,clinic,jread);
+	/*
 	for (i = 0; i < fullCalendar.size(); i++) {
 		for (int j = 0; j < fullCalendar[i].size(); j++) {
 			std::cout << fullCalendar[i][j] << "  ";
 		}
 		std::cout << "\n";
 	}
-
-
-
-
+	*/
 // End fill
+
+// 4. create csv
+	printCSV(fullCalendar);
 
 
 // Testing revmoveAvailable
