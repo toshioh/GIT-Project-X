@@ -8,6 +8,10 @@
 
 using namespace std;
 
+Clinic::Clinic() {
+	// default constructor
+}
+
 Clinic::Clinic(string clinicName, vector<string> min, int ideal, int max) {
 	setName(clinicName);
 	setMinStaff(min);

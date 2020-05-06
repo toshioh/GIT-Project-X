@@ -18,6 +18,7 @@ private:
 	std::vector<std::string> min_staff; //A list of the bare minimum staff listed by Pediatric or Adult
 
 public:
+	Clinic();
 	Clinic(std::string, std::vector<std::string>, int, int);
 	void setName(std::string);
 	void setMinStaff(std::vector<std::string>);

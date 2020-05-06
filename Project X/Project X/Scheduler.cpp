@@ -14,11 +14,16 @@ using std::vector;
 using json = nlohmann::json;
 
 /* initialize classes */
-void initClinics()
+vector<Clinic> initClinics()
 {
+	vector<Clinic> clinic;
 	Clinic chf("CHF", { "pediatric","adult" }, 5, 5);
+	clinic.push_back(chf);
 	Clinic ths("THS", { "pediatric","adult" }, 2, 3);
+	clinic.push_back(ths);
 	Clinic ppch("PPCH", { "pediatric","adult" }, 2, 3);
+	clinic.push_back(ppch);
+
 	/*
 	std::cout << chf.getName() << std::endl;
 	std::vector<string> list = chf.getMinStaff();
@@ -27,6 +32,7 @@ void initClinics()
 	std::cout << std::endl << chf.getIdeal() << std::endl;
 	std::cout << chf.getMax() << std::endl;
 	*/
+	return clinic;
 }
 
 int findQualifiedEmpIndex(std::vector<Employee> &employees, string neededAgeGroup, int osize)
@@ -41,8 +47,7 @@ int findQualifiedEmpIndex(std::vector<Employee> &employees, string neededAgeGrou
 			i = osize;
 		}
 	}
-	if (index == -1)
-	{
+	if (index == -1) {
 		throw std::invalid_argument("No employees left to fill this position!");
 	}
 	else {
@@ -87,24 +92,108 @@ void removeAvailable(vector<Employee>& employees, string day)
 }
 
 
+vector<string> scheduleDates(Calendar c)
+{
+	string dayname;
+	int month, year, daynum;
+	string date, monthname;
+
+	int numOfDays = c.getnumOfDays();
+	std::cout << numOfDays << std::endl;
+	vector<string> allDates;
+	for (int i = 0; i <= numOfDays; i++) {
+		if (i == 0) {
+			allDates.push_back(" ");
+		}
+		else {
+			month = c.getMonthNum();
+			year = c.getYearNum();
+			c.setDayName(c.dayNumber(i, month, year));
+			monthname = c.getMonthName(month);
+
+			date = c.getDayName() + " " + std::to_string(i) + "-" + monthname + "-" + std::to_string(year);
+			allDates.push_back(date);
+		}
+	}
+	return allDates;
+}
+
+
+vector<vector<string>> createCalendar(vector<string> dates, vector<Employee> emp, vector<Clinic> cln) {
+	vector<vector<string>> calendar;
+	vector<string> row;
+	vector<string> avdays;
+	string empName;
+	string currdate, currday;
+	string prefage, ageNeed;
+
+	int qindex;
+
+	for (int i = 0; i <= dates.size(); i++) {
+		for (int j = 0; j < emp.size(); j++) {
+			if (i == 0) {
+				// Make name row
+				empName = emp[j].getName();
+				row.push_back(empName);
+			}
+			else {
+				/*
+				prefage = emp[i].getPrefAge();
+				avdays  = emp[i].getAvailability();
+
+				currdate = dates[i];
+				currday = currdate.substr(0, 3);
+				std::cout << currday << std::endl;
+				// make function
+				if (currday == "Sun" || currday == "Sat") {
+					row.push_back(" "); // no weekends
+				}
+				else {
+					
+					int csize = cln.size();
+					int ecount = 0;
+					removeAvailable(emp,currday);
+					for (int k = 0; k < csize; k++) {
+						if (ecount == cln[k].getMax()) {
+							// max clinicians met
+						}else if(ecount >= cln[k].getIdeal()) {
+							string staff = cln[k].getMinStaff;
+							qindex = findQualifiedEmpIndex(emp,cln[k].getMinStaff());
+						}
+						//qindex = findQualifiedEmpIndex(emp, );
+					}
+					
+					//row.push_back(clinic.getName());
+					
+				}
+				*/
+			}
+		}
+	}
+	calendar.push_back(row);
+	return calendar;
+}
+
+
 /* Main function */
 
 int main() {
 	int jsize, i, m, y;
 	json jread;
 	Calendar cal;
+	vector<Clinic> clinic;
 	vector<string> vect;
 	vector<Employee> enew;
 
 	// User input for month and year
-	/*
+	
 	std::cout << "Enter month #: ";
 	std::cin >> m;
 	std::cout << "Enter Year #: ";
 	std::cin >> y;
 
 	cal.setMonthYearNum(m,y);
-	*/
+	
 	
 	// Reading JSON
 	std::ifstream jfile("User.json");
@@ -113,7 +202,37 @@ int main() {
 	
 	// Read into Employee vector of size jsize
 	enew = initEmployee(jread, jsize);
+	clinic = initClinics();
 
+
+// Testing schedule Dates
+	std::cout << "Schedule test: " << std::endl;
+	vector<string> dates;
+	dates = scheduleDates(cal);
+	std::cout << dates.size() << std::endl;
+	string currentDay;
+	for (int k = 0; k < dates.size(); k++) {
+		currentDay = dates[k];
+		std::cout << currentDay << std::endl;
+	}
+// End of Tesing
+
+// Testing Calendar make:
+	std::cout << "Calendar row test: " << std::endl;
+	vector<vector<string>> calendar;
+	vector<string> getvect;
+	string getcal;
+	calendar = createCalendar(dates, enew, clinic);
+	std::cout << calendar.size() << std::endl;
+	for (i = 0; i < calendar.size(); i++) {
+		getvect = calendar[i];
+		for (int j = 0; j < getvect.size(); j++) {
+			getcal = getvect[j];
+			std::cout << getcal << ",";
+		}
+		std::cout << "\n";
+	}
+// End of Tesing
 
 
 // Testing revmoveAvailable
