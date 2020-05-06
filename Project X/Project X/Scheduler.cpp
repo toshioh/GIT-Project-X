@@ -87,7 +87,7 @@ void removeAvailable(vector<Employee>& employees, string day)
 
 		it = find(availableDays.begin(), availableDays.end(), day);
 		if (it == availableDays.end())
-			employees[i].setPrefAge("NULL");
+			employees[i].setPrefAge("null");
 	}
 }
 
@@ -119,60 +119,166 @@ vector<string> scheduleDates(Calendar c)
 }
 
 
-vector<vector<string>> createCalendar(vector<string> dates, vector<Employee> emp, vector<Clinic> cln) {
+// Making edges of csv
+vector<vector<string>> createCalendar(vector<string> dates, vector<Employee> emp) {
 	vector<vector<string>> calendar;
 	vector<string> row;
-	vector<string> avdays;
 	string empName;
-	string currdate, currday;
-	string prefage, ageNeed;
-
-	int qindex;
-
-	for (int i = 0; i <= dates.size(); i++) {
-		for (int j = 0; j < emp.size(); j++) {
+	string date;
+	std::cout << "date: " << dates.size() << std::endl;;
+	for (int i = 0; i < dates.size(); i++) {
+		row = {};
+		for (int j = 0; j <= emp.size(); j++) {
 			if (i == 0) {
-				// Make name row
-				empName = emp[j].getName();
-				row.push_back(empName);
-			}
-			else {
-				/*
-				prefage = emp[i].getPrefAge();
-				avdays  = emp[i].getAvailability();
-
-				currdate = dates[i];
-				currday = currdate.substr(0, 3);
-				std::cout << currday << std::endl;
-				// make function
-				if (currday == "Sun" || currday == "Sat") {
-					row.push_back(" "); // no weekends
+				if (j == 0) {
+					row.push_back("-X-");
 				}
 				else {
-					
-					int csize = cln.size();
-					int ecount = 0;
-					removeAvailable(emp,currday);
-					for (int k = 0; k < csize; k++) {
-						if (ecount == cln[k].getMax()) {
-							// max clinicians met
-						}else if(ecount >= cln[k].getIdeal()) {
-							string staff = cln[k].getMinStaff;
-							qindex = findQualifiedEmpIndex(emp,cln[k].getMinStaff());
-						}
-						//qindex = findQualifiedEmpIndex(emp, );
-					}
-					
-					//row.push_back(clinic.getName());
-					
+					// Make name row
+					empName = emp[j-1].getName();
+					row.push_back(empName);
 				}
-				*/
+			}
+			else {
+				if (j == 0) {
+					date = dates[i];
+					row.push_back(date);
+				}
+				else {
+					row.push_back(".");
+				}
 			}
 		}
+		calendar.push_back(row);
 	}
-	calendar.push_back(row);
 	return calendar;
 }
+
+
+// fill csv
+vector<vector<string>> fillCalendar(vector<vector<string>> cal,vector<Employee> emp, vector<Clinic> cln) {
+	string currDay, currDate, empName, currentEmpRole,clinicName = "";
+	vector<string> minStaff;
+	int empCount, empMax, empIdeal;
+	int qindex;
+	vector<string>::iterator it;
+	int nameIndex;
+	int clinicIndex;
+	int csize = cln.size();
+	int empSize = emp.size();
+	bool areMoreEmpAvailable = true;
+	bool areMoreClinicsAvailable = true;
+
+	for (int i = 1; i < cal.size(); i++) { // Rows
+		currDate = cal[i][0];
+		currDay = currDate.substr(0, 3);
+		
+			if (currDay != "Sun" && currDay != "Sat") { // checks if it's the weekend
+				removeAvailable(emp,currDay);
+				while (areMoreEmpAvailable)
+				{
+					for (int j = 0; j < emp.size(); j++) // checks if more employees to schedule
+					{
+						currentEmpRole = emp[j].getPrefAge();
+						empName = emp[j].getName();
+						if (currentEmpRole != "null")
+						{
+							j = emp.size();
+							areMoreEmpAvailable = true;
+						}
+						else 
+						{
+							areMoreEmpAvailable = false;
+						}
+
+					}
+					if (areMoreEmpAvailable && !areMoreClinicsAvailable)
+					{
+						it = find(cal[0].begin(), cal[0].end(), empName);
+						nameIndex = it - cal[0].begin();
+
+						for (int c = 0; c < csize; c++) {
+							empCount = cln[c].getCurrentEmps();
+							empMax = cln[c].getMax();
+							if (empCount < empMax)
+							{
+								//cal[]
+							}
+							
+						}
+					}
+					else
+					{
+						while (areMoreClinicsAvailable)
+						{
+							for (int p = 0; p < csize; p++)
+							{
+								vector<string> availableClinic = cln[p].getMinStaff();
+								if (!availableClinic.empty())
+								{
+									p = csize;
+									areMoreClinicsAvailable = true;
+								}
+								else
+								{
+									areMoreClinicsAvailable = false;
+								}
+							}
+							for (int k = 0; k < csize; k++) { //Fill all clinics min requirements
+								minStaff = cln[k].getMinStaff();
+								while (!minStaff.empty())
+								{
+									clinicName = cln[k].getName();
+
+									int minStaffSize = minStaff.size();
+									string neededRole = minStaff[minStaffSize - 1];
+									qindex = findQualifiedEmpIndex(emp, neededRole, empSize);
+									empName = emp[qindex].getName();
+									it = find(cal[0].begin(), cal[0].end(), empName);
+									nameIndex = it - cal[0].begin();
+									cal[i][nameIndex] = clinicName;
+									minStaff.pop_back();
+									empCount = cln[k].getCurrentEmps() + 1;
+									cln[k].setCurrentEmps(empCount);
+								}
+								cln[k].setMinStaff({});
+
+							}
+
+						}
+					}
+				}
+			}
+		
+	}
+
+	// make function
+	/*
+	if (currday == "Sun" || currday == "Sat") {
+		row.push_back("--"); // no weekends
+	}
+	else {
+	
+	int ecount = 0;
+
+	removeAvailable(emp,currday);
+
+	for (int k = 0; k < csize; k++) {
+		if (ecount == cln[k].getMax()) {
+			// max clinicians met
+		}else if(ecount >= cln[k].getIdeal()) {
+			string staff = cln[k].getMinStaff;
+			qindex = findQualifiedEmpIndex(emp,cln[k].getMinStaff());
+		}
+	//qindex = findQualifiedEmpIndex(emp, );
+	}
+
+	//row.push_back(clinic.getName());
+
+	}
+	*/
+}
+
 
 
 /* Main function */
@@ -205,45 +311,56 @@ int main() {
 	clinic = initClinics();
 
 
-// Testing schedule Dates
+// 1. Testing schedule Dates
 	std::cout << "Schedule test: " << std::endl;
 	vector<string> dates;
 	dates = scheduleDates(cal);
+	/*
 	std::cout << dates.size() << std::endl;
 	string currentDay;
 	for (int k = 0; k < dates.size(); k++) {
 		currentDay = dates[k];
 		std::cout << currentDay << std::endl;
 	}
+	*/
 // End of Tesing
 
-// Testing Calendar make:
+// 2. Testing Calendar make:
 	std::cout << "Calendar row test: " << std::endl;
 	vector<vector<string>> calendar;
 	vector<string> getvect;
 	string getcal;
-	calendar = createCalendar(dates, enew, clinic);
-	std::cout << calendar.size() << std::endl;
+	calendar = createCalendar(dates, enew);
+	
 	for (i = 0; i < calendar.size(); i++) {
-		getvect = calendar[i];
-		for (int j = 0; j < getvect.size(); j++) {
-			getcal = getvect[j];
-			std::cout << getcal << ",";
+		for (int j = 0; j < calendar[i].size(); j++) {
+			std::cout << calendar[i][j] << "  ";
 		}
 		std::cout << "\n";
 	}
+	
 // End of Tesing
+
+// 3. Fill calendar
+
+
+
+
+
+// End fill
 
 
 // Testing revmoveAvailable
+	/*
 	removeAvailable(enew, "Tue");
 	std::cout << "Removeable age test: " << std::endl;
 	std::cout << enew[0].getPrefAge() << std::endl;
 	std::cout << enew[1].getPrefAge() << std::endl;
 	std::cout << enew[2].getPrefAge() << std::endl;
 	std::cout << enew[3].getPrefAge() << std::endl;
+	*/
 // End of Tesing
-	
+/*
 // Testing Availability
 	std::cout << "Get Availability test: " << std::endl;
 	vect = enew[3].getAvailability();
@@ -267,7 +384,7 @@ int main() {
 	std::cout << enew[indx].getPrefAge() << std::endl;
 
 // End of Testing
-
+*/
 	//delete[] emp;
 	return 0;
 }

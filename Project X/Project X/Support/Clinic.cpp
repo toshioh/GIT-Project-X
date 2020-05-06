@@ -17,6 +17,7 @@ Clinic::Clinic(string clinicName, vector<string> min, int ideal, int max) {
 	setMinStaff(min);
 	setIdeal(ideal);
 	setMax(max);
+	setCurrentEmps(0);
 }
 
 // Set Clinic's Name, Days open/closed, Number of staff for each clinic
@@ -35,6 +36,10 @@ void Clinic::setMax(int max) {
 	max_clinicians = max;
 }
 
+void Clinic::setCurrentEmps(int curr) {
+	currNumOfEmps = curr;
+}
+
 
 // Get Clinic's Name, Days open/closed, Number of staff for each clinic
 string Clinic::getName() {
@@ -49,4 +54,8 @@ int Clinic::getIdeal() {
 }
 int Clinic::getMax() {
 	return max_clinicians;
+}
+
+int Clinic::getCurrentEmps() {
+	return currNumOfEmps;
 }
