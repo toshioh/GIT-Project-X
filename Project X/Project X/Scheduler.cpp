@@ -56,9 +56,11 @@ int findQualifiedEmpIndex(std::vector<Employee> &employees, string neededAgeGrou
 	return index;
 }
 
-vector<Employee> initEmployee(json jread, int jsize) {
+vector<Employee> initEmployee(json jread) {
 	std::vector<Employee> emp;
 	Employee newemp;
+
+	int jsize = jread.size();
 	json::iterator it;
 	int i;
 
@@ -99,7 +101,7 @@ vector<string> scheduleDates(Calendar c)
 	string date, monthname;
 
 	int numOfDays = c.getnumOfDays();
-	std::cout << numOfDays << std::endl;
+	//std::cout << numOfDays << std::endl;
 	vector<string> allDates;
 	for (int i = 0; i <= numOfDays; i++) {
 		if (i == 0) {
@@ -125,7 +127,7 @@ vector<vector<string>> createCalendar(vector<string> dates, vector<Employee> emp
 	vector<string> row;
 	string empName;
 	string date;
-	std::cout << "date: " << dates.size() << std::endl;;
+	//std::cout << "date: " << dates.size() << std::endl;;
 	for (int i = 0; i < dates.size(); i++) {
 		row = {};
 		for (int j = 0; j <= emp.size(); j++) {
@@ -135,7 +137,8 @@ vector<vector<string>> createCalendar(vector<string> dates, vector<Employee> emp
 				}
 				else {
 					// Make name row
-					empName = emp[j-1].getName();
+					int empi = j - 1;
+					empName = emp[empi].getName();
 					row.push_back(empName);
 				}
 			}
@@ -145,7 +148,7 @@ vector<vector<string>> createCalendar(vector<string> dates, vector<Employee> emp
 					row.push_back(date);
 				}
 				else {
-					row.push_back(".");
+					row.push_back(" ");
 				}
 			}
 		}
@@ -156,12 +159,14 @@ vector<vector<string>> createCalendar(vector<string> dates, vector<Employee> emp
 
 
 // fill csv
-vector<vector<string>> fillCalendar(vector<vector<string>> cal,vector<Employee> emp, vector<Clinic> cln) {
+vector<vector<string>> fillCalendar(vector<vector<string>> cal,vector<Employee> emp, vector<Clinic> cln, json jread) {
 	string currDay, currDate, empName, currentEmpRole,clinicName = "";
 	vector<string> minStaff;
 	int empCount, empMax, empIdeal;
 	int qindex;
+	int currentEmpInd;
 	vector<string>::iterator it;
+	
 	int nameIndex;
 	int clinicIndex;
 	int csize = cln.size();
@@ -175,18 +180,21 @@ vector<vector<string>> fillCalendar(vector<vector<string>> cal,vector<Employee> 
 		
 			if (currDay != "Sun" && currDay != "Sat") { // checks if it's the weekend
 				removeAvailable(emp,currDay);
+				areMoreEmpAvailable = true;
+				areMoreClinicsAvailable = true;
 				while (areMoreEmpAvailable)
 				{
 					for (int j = 0; j < emp.size(); j++) // checks if more employees to schedule
 					{
 						currentEmpRole = emp[j].getPrefAge();
 						empName = emp[j].getName();
+						currentEmpInd = j;
 						if (currentEmpRole != "null")
 						{
 							j = emp.size();
 							areMoreEmpAvailable = true;
 						}
-						else 
+						else if(j==emp.size())
 						{
 							areMoreEmpAvailable = false;
 						}
@@ -194,6 +202,7 @@ vector<vector<string>> fillCalendar(vector<vector<string>> cal,vector<Employee> 
 					}
 					if (areMoreEmpAvailable && !areMoreClinicsAvailable)
 					{
+						int numOfFullClinics = 0;
 						it = find(cal[0].begin(), cal[0].end(), empName);
 						nameIndex = it - cal[0].begin();
 
@@ -202,9 +211,24 @@ vector<vector<string>> fillCalendar(vector<vector<string>> cal,vector<Employee> 
 							empMax = cln[c].getMax();
 							if (empCount < empMax)
 							{
-								//cal[]
+								emp[currentEmpInd].setPrefAge("null");
+
+								clinicName = cln[c].getName();
+								cal[i][nameIndex] = clinicName;
+								empCount = cln[c].getCurrentEmps() + 1;
+								cln[c].setCurrentEmps(empCount);
+								
+								c = csize;
 							}
-							
+							else
+							{
+								numOfFullClinics++;
+							}
+							if (numOfFullClinics == csize)
+							{
+								emp[currentEmpInd].setPrefAge("null");
+								areMoreEmpAvailable = false;
+							}
 						}
 					}
 					else
@@ -230,8 +254,8 @@ vector<vector<string>> fillCalendar(vector<vector<string>> cal,vector<Employee> 
 								{
 									clinicName = cln[k].getName();
 
-									int minStaffSize = minStaff.size();
-									string neededRole = minStaff[minStaffSize - 1];
+									int minStaffSize = minStaff.size() - 1;
+									string neededRole = minStaff[minStaffSize];
 									qindex = findQualifiedEmpIndex(emp, neededRole, empSize);
 									empName = emp[qindex].getName();
 									it = find(cal[0].begin(), cal[0].end(), empName);
@@ -240,45 +264,25 @@ vector<vector<string>> fillCalendar(vector<vector<string>> cal,vector<Employee> 
 									minStaff.pop_back();
 									empCount = cln[k].getCurrentEmps() + 1;
 									cln[k].setCurrentEmps(empCount);
+									emp[qindex].setPrefAge("null");
 								}
 								cln[k].setMinStaff({});
 
 							}
-
 						}
 					}
 				}
 			}
-		
+			emp = initEmployee(jread);
+			cln = initClinics();		
 	}
-
-	// make function
-	/*
-	if (currday == "Sun" || currday == "Sat") {
-		row.push_back("--"); // no weekends
-	}
-	else {
-	
-	int ecount = 0;
-
-	removeAvailable(emp,currday);
-
-	for (int k = 0; k < csize; k++) {
-		if (ecount == cln[k].getMax()) {
-			// max clinicians met
-		}else if(ecount >= cln[k].getIdeal()) {
-			string staff = cln[k].getMinStaff;
-			qindex = findQualifiedEmpIndex(emp,cln[k].getMinStaff());
-		}
-	//qindex = findQualifiedEmpIndex(emp, );
-	}
-
-	//row.push_back(clinic.getName());
-
-	}
-	*/
+	return cal;
 }
 
+
+void printCSV(vector<vector<string>> calendar) {
+
+}
 
 
 /* Main function */
@@ -304,15 +308,15 @@ int main() {
 	// Reading JSON
 	std::ifstream jfile("User.json");
 	jfile >> jread;
-	jsize = jread.size();
+	//jsize = jread.size();
 	
 	// Read into Employee vector of size jsize
-	enew = initEmployee(jread, jsize);
+	enew = initEmployee(jread);
 	clinic = initClinics();
 
 
 // 1. Testing schedule Dates
-	std::cout << "Schedule test: " << std::endl;
+	//std::cout << "Schedule test: " << std::endl;
 	vector<string> dates;
 	dates = scheduleDates(cal);
 	/*
@@ -326,23 +330,30 @@ int main() {
 // End of Tesing
 
 // 2. Testing Calendar make:
-	std::cout << "Calendar row test: " << std::endl;
+	//std::cout << "Calendar row test: " << std::endl;
 	vector<vector<string>> calendar;
-	vector<string> getvect;
-	string getcal;
+	//vector<string> getvect;
+	//string getcal;
 	calendar = createCalendar(dates, enew);
-	
+	/*
 	for (i = 0; i < calendar.size(); i++) {
 		for (int j = 0; j < calendar[i].size(); j++) {
 			std::cout << calendar[i][j] << "  ";
 		}
 		std::cout << "\n";
 	}
-	
+	*/
 // End of Tesing
 
 // 3. Fill calendar
-
+	vector<vector<string>> fullCalendar;
+	fullCalendar = fillCalendar(calendar,enew,clinic,jread);
+	for (i = 0; i < fullCalendar.size(); i++) {
+		for (int j = 0; j < fullCalendar[i].size(); j++) {
+			std::cout << fullCalendar[i][j] << "  ";
+		}
+		std::cout << "\n";
+	}
 
 
 

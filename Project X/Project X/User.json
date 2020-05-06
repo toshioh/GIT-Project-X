@@ -16,27 +16,27 @@
   },
   {
     "Name": "Joaquin",
-    "Available Days": [ "Mon", "Fri", "Sat" ],
+    "Available Days": [ "Mon", "Fri", "Wed" ],
     "Preferred Age": "family"
   },
   {
     "Name": "Jack",
-    "Available Days": [ "Tue", "Mon", "Sat" ],
+    "Available Days": [ "Tue", "Mon", "Thu" ],
     "Preferred Age": "family"
   },
   {
     "Name": "Jill",
-    "Available Days": [ "Mon", "Wed", "Mon" ],
+    "Available Days": [ "Mon", "Wed", "Fri" ],
     "Preferred Age": "adult"
   },
   {
     "Name": "Ant",
-    "Available Days": [ "Tue", "Fri", "Sun" ],
+    "Available Days": [ "Tue", "Fri", "Mon" ],
     "Preferred Age": "adult"
   },
   {
     "Name": "Man",
-    "Available Days": [ "Tue", "Wed", "Sat" ],
+    "Available Days": [ "Tue", "Wed", "Fri" ],
     "Preferred Age": "pediatric"
   },
   {
@@ -61,7 +61,7 @@
   },
   {
     "Name": "Spiderman",
-    "Available Days": [ "Tue", "Wed", "Sat" ],
+    "Available Days": [ "Tue", "Wed", "Thu" ],
     "Preferred Age": "pediatric"
   },
   {
