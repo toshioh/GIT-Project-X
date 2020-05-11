@@ -13,7 +13,7 @@ using std::string;
 using std::vector;
 using json = nlohmann::json;
 
-/* initialize classes */
+/* initialize clinics */
 vector<Clinic> initClinics()
 {
 	vector<Clinic> clinic;
@@ -27,7 +27,7 @@ vector<Clinic> initClinics()
 	return clinic;
 }
 
-
+//finds an available employee that can fill a specific role at a clinic
 int findQualifiedEmpIndex(std::vector<Employee> &employees, string neededAgeGroup, int osize)
 {
 	int index = -1;
@@ -35,21 +35,21 @@ int findQualifiedEmpIndex(std::vector<Employee> &employees, string neededAgeGrou
 	for (int i = 0; i < osize; i++)
 	{
 		string empPrefAge = employees[i].getPrefAge();
-		if (neededAgeGroup == empPrefAge || empPrefAge == "family") {
-			index = i;
-			i = osize;
+		if (neededAgeGroup == empPrefAge || empPrefAge == "family") { //If the employees role matches the needed role
+			index = i; //saves their index
+			i = osize; // gets us out of the loop
 		}
 	}
 	if (index == -1) {
 		throw std::invalid_argument("No employees left to fill this position!");
 	}
 	else {
-		employees[index].setPrefAge("null");
+		employees[index].setPrefAge("null"); //Marks them as unavailable now that they've been picked
 	}
 	return index;
 }
 
-
+//Creates objects for each employee, and reads all of their information into those objects
 vector<Employee> initEmployee(json jread) {
 	std::vector<Employee> emp;
 	Employee newemp;
@@ -72,7 +72,7 @@ vector<Employee> initEmployee(json jread) {
 	}
 	return emp;
 }
-
+//Marks each employee as available or unavailable given their listed availability 
 void removeAvailable(vector<Employee>& employees, string day)
 {
 	int size = employees.size();
@@ -81,13 +81,13 @@ void removeAvailable(vector<Employee>& employees, string day)
 		vector<string> availableDays = employees[i].getAvailability();
 		vector<string>::iterator it;
 
-		it = find(availableDays.begin(), availableDays.end(), day);
+		it = find(availableDays.begin(), availableDays.end(), day); //checks if the current day is lised on their availability
 		if (it == availableDays.end())
-			employees[i].setPrefAge("null");
+			employees[i].setPrefAge("null"); //marks them unavailable if the current day isn't found
 	}
 }
 
-
+//gets a list of all of the dates in the given month
 vector<string> scheduleDates(Calendar c)
 {
 	string dayname;
@@ -115,7 +115,7 @@ vector<string> scheduleDates(Calendar c)
 }
 
 
-// Making edges of csv
+// Makes blank schedule with names at the top and dates on the left hand side
 vector<vector<string>> createCalendar(vector<string> dates, vector<Employee> emp) {
 	vector<vector<string>> calendar;
 	vector<string> row;
@@ -152,7 +152,7 @@ vector<vector<string>> createCalendar(vector<string> dates, vector<Employee> emp
 }
 
 
-// fill csv
+// Makes the final schedule
 vector<vector<string>> fillCalendar(vector<vector<string>> cal,vector<Employee> emp, vector<Clinic> cln, json jread) {
 	string currDay, currDate, empName, currentEmpRole,clinicName = "";
 	vector<string> minStaff;
@@ -194,73 +194,73 @@ vector<vector<string>> fillCalendar(vector<vector<string>> cal,vector<Employee> 
 						}
 
 					}
-					if (areMoreEmpAvailable && !areMoreClinicsAvailable)
+					if (areMoreEmpAvailable && !areMoreClinicsAvailable) //if minimum clinic capacity has been met, but more employees still need to be scheduled
 					{
 						int numOfFullClinics = 0;
 						it = find(cal[0].begin(), cal[0].end(), empName);
 						nameIndex = it - cal[0].begin();
 
-						for (int c = 0; c < csize; c++) {
+						for (int c = 0; c < csize; c++) { //loops through clinics
 							empCount = cln[c].getCurrentEmps();
 							empMax = cln[c].getMax();
-							if (empCount < empMax)
-							{
+							if (empCount < empMax) //if current clinic hasn't reached max capacity
+							{	//schedule employee at this clinic
 								emp[currentEmpInd].setPrefAge("null");
 
-								clinicName = cln[c].getName();
-								cal[i][nameIndex] = clinicName;
-								empCount = cln[c].getCurrentEmps() + 1;
+								clinicName = cln[c].getName(); //fills the cell on the day (i) and under their name with the name of the clinic
+								cal[i][nameIndex] = clinicName;  //
+								empCount = cln[c].getCurrentEmps() + 1; //increment the current employee count of that clinic
 								cln[c].setCurrentEmps(empCount);
 								
 								c = csize;
 							}
 							else
 							{
-								numOfFullClinics++;
+								numOfFullClinics++; //increment the number of full clinics
 							}
-							if (numOfFullClinics == csize)
+							if (numOfFullClinics == csize) //if all clinics are full
 							{
 								emp[currentEmpInd].setPrefAge("null");
-								areMoreEmpAvailable = false;
+								areMoreEmpAvailable = false; //Stop scheduling for today
 							}
 						}
 					}
 					else
 					{
-						while (areMoreClinicsAvailable)
+						while (areMoreClinicsAvailable) //While any clinics still need their minimum requirements met
 						{
-							for (int p = 0; p < csize; p++)
+							for (int p = 0; p < csize; p++) //loops thru clinics
 							{
 								vector<string> availableClinic = cln[p].getMinStaff();
-								if (!availableClinic.empty())
+								if (!availableClinic.empty()) //if there are roles that need to be filled at current clinic
 								{
-									p = csize;
+									p = csize; //jumps out of loop
 									areMoreClinicsAvailable = true;
 								}
 								else
 								{
-									areMoreClinicsAvailable = false;
+									areMoreClinicsAvailable = false; //all minimum requirements have been met
 								}
 							}
 							for (int k = 0; k < csize; k++) { //Fill all clinics min requirements
 								minStaff = cln[k].getMinStaff();
 								while (!minStaff.empty())
 								{
-									clinicName = cln[k].getName();
+									clinicName = cln[k].getName(); //gets clinic name
 
 									int minStaffSize = minStaff.size() - 1;
-									string neededRole = minStaff[minStaffSize];
-									qindex = findQualifiedEmpIndex(emp, neededRole, empSize);
-									empName = emp[qindex].getName();
-									it = find(cal[0].begin(), cal[0].end(), empName);
+									string neededRole = minStaff[minStaffSize]; //gets role that needs to be filled
+									qindex = findQualifiedEmpIndex(emp, neededRole, empSize); //check which employee can fill that role
+									empName = emp[qindex].getName(); //gets the name of that employee
+									it = find(cal[0].begin(), cal[0].end(), empName); //finds that employee on the schedule
 									nameIndex = it - cal[0].begin();
-									cal[i][nameIndex] = clinicName;
-									minStaff.pop_back();
-									empCount = cln[k].getCurrentEmps() + 1;
-									cln[k].setCurrentEmps(empCount);
-									emp[qindex].setPrefAge("null");
+									cal[i][nameIndex] = clinicName; //fills the cell on the day (i) and under their name with the name of the clinic
+									minStaff.pop_back(); //removes the now fulfilled role from the clinic's list of required roles
+									empCount = cln[k].getCurrentEmps() + 1; //increments the current employee count of that clinic
+									cln[k].setCurrentEmps(empCount); 
+									emp[qindex].setPrefAge("null"); //marks them unavailable
 								}
-								cln[k].setMinStaff({});
+								cln[k].setMinStaff({}); //that clinic's minimum requirements are filled
 
 							}
 						}
@@ -273,7 +273,7 @@ vector<vector<string>> fillCalendar(vector<vector<string>> cal,vector<Employee> 
 	return cal;
 }
 
-
+//prints the schedule into a csv file
 void printCSV(vector<vector<string>> calendar) {
 	
 	int rowsize = calendar.size();
